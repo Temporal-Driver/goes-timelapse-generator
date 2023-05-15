@@ -27,6 +27,8 @@ def main():
     dates = []
     filename = ''
     resolution = get_resolution()
+    if not os.path.exists(image_path):
+        os.makedirs(image_path)
     while running:
         while name_loop:
             dates = date_input()
