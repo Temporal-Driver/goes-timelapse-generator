@@ -43,13 +43,12 @@ def list_images(valid_codes, resolution, url, ssl):
 
 
 def generate_gif(file_codes, filename, resolution, image_path):
-    image_frames = []
-    images_in_folder = glob.glob(image_path + '\\*.jpg')
+    image_frames = [None] * len(file_codes)
+    images_in_folder = glob.glob(image_path + '/*.jpg')
     for img_path in images_in_folder:
-        for code in file_codes:
+        for i, code in enumerate(file_codes):
             if code in img_path and resolution in img_path:
-                new_frame = Image.open(img_path)
-                image_frames.append(new_frame)
+                image_frames[i] = Image.open(img_path)
     image_frames[0].save(filename, format='GIF',
                          append_images=image_frames[1:],
                          save_all=True,
