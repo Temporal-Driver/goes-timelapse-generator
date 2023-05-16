@@ -6,20 +6,27 @@ ___
 ### Features
 
 - GOES-East Full Disk GIF Timelapses
+- GOES-West Full Disk GIF Timelapses
 ___
 ### Planned Features
-
-- GOES-West Timelapses
-- More GOES-East Regions
-- FFMPEG Functionality
+- More regions than just Full Disk
+- Saving presets
+- GIF compression
+- FFMPEG functionality to generate videos
+- Smarter user experience (i.e. command line usage rather than input prompts)
 ---
 ## How To Use
-- First, install the required libraries from requirements.txt  
-*(Open your shell and navigate to the location of requirements.txt)*
+- Clone the repo or download a release
+- Install the required libraries from requirements.txt  
+*(Open your shell in the repo/release folder)*
 ```shell
 pip install -r requirements.txt
 ```
 - Run main.py and follow the instructions
+#### Note:
+- When you enter a start/end time, make sure the minutes are in increments of 10 otherwise no images will be found. (This will be fixed in a future update)
+- Times are in UTC
+- Images are not yet deleted automatically, so be sure to clear out the images folder to save space after generating.
 ___
 ### Authors
 
