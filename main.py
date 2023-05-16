@@ -6,7 +6,6 @@
 """
 
 import ffmpeg
-import subprocess
 import math
 import os
 from datetime import datetime, timedelta
@@ -40,10 +39,8 @@ def main():
                 name_loop = False
         file_codes = generate_file_codes(dates[0], dates[1])
         results = image_handling.list_images(file_codes, resolution, url, ssl)
-        image_handling.download_images(results, image_path, ssl)
-
-        generate_video(os.getcwd() + '\\images', os.getcwd() + '\\output.mp4', 30)
-
+        image_files = image_handling.download_images(results, image_path, ssl, True)
+        generate_video(image_files)
         # image_handling.generate_gif(file_codes, filename, resolution, image_path)
         print('File created at: ' + image_path + filename + ' | ('
               + bytes_to_megabytes(os.stat(os.getcwd() + '\\' + filename).st_size) + 'MB)')
@@ -56,15 +53,17 @@ def main():
     quit()
 
 
-def generate_video(frames_folder, output_path, fps=30):
-    # Construct the ffmpeg command
-    ffmpeg_cmd = f'ffmpeg -framerate {fps} -i 2023%03d.jpg -c:v libx264 -r 30 -pix_fmt yuv420p {output_path}'
+def generate_video(file_paths):
+    input_streams = []
+    for file_path in file_paths:
+        input_streams.append(ffmpeg.input(file_path))
 
-    # Run the ffmpeg command
-    subprocess.call(ffmpeg_cmd, shell=True)
-
-
-generate_video(os.getcwd() + '/images', 60)
+    (
+        ffmpeg
+        .concat(*input_streams, v=1, a=0)
+        .output('output.mp4', r=30)
+        .run()
+    )
 
 
 # Takes a start and end datetime object and generates a filename

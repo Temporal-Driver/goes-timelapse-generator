@@ -14,13 +14,21 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def download_images(results, image_path, ssl):
+# TODO: Figure out issue printing new lines
+def download_images(results, image_path, ssl, return_paths=False):
+    file_paths = []
     for file in results:
         filename = file.split('//')[-1]
+        file_paths.append(os.path.join(image_path, filename))
         dl_path = os.path.join(image_path, filename)
         if not os.path.isfile(dl_path):
+            print('\rDownloading: ' + filename)
             r = requests.get(file, allow_redirects=True, verify=ssl)
             open(dl_path, 'wb').write(r.content)
+        else:
+            print('\rFile Found (Skipping): ' + filename)
+    if return_paths:
+        return file_paths
 
 
 def list_images(valid_codes, resolution, url, ssl):
