@@ -12,8 +12,7 @@ from datetime import datetime, timedelta
 from modules import input_tools
 from modules import image_handling
 
-url = 'https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/'
-image_path = os.getcwd() + '\\images'
+image_path = os.getcwd() + '/images'
 ssl = True  # I wouldn't change this unless you know what you're doing
 supported_resolutions = [339, 678, 1808, 5424, 10848, 21696]
 
@@ -23,6 +22,7 @@ def main():
     running = True
     dates = []
     filename = ''
+    url = input_tools.pick_satellite()
     resolution = input_tools.get_resolution(supported_resolutions)
     if not os.path.exists(image_path):
         os.makedirs(image_path)
@@ -30,9 +30,9 @@ def main():
         while name_loop:
             dates = input_tools.date_input()
             filename = generate_file_name(dates[0], dates[1])
-            if not os.path.exists(os.getcwd() + '\\' + filename):
+            if not os.path.exists(os.getcwd() + '/' + filename):
                 name_loop = False
-            if os.path.exists(os.getcwd() + '\\' + filename):
+            if os.path.exists(os.getcwd() + '/' + filename):
                 print('A file with that range was found, please pick another')
             else:
                 name_loop = False
@@ -41,7 +41,7 @@ def main():
         image_handling.download_images(results, image_path, ssl)
         image_handling.generate_gif(file_codes, filename, resolution, image_path)
         print('File created at: ' + image_path + filename + ' | ('
-              + bytes_to_megabytes(os.stat(os.getcwd() + '\\' + filename).st_size) + 'MB)')
+              + bytes_to_megabytes(os.stat(os.getcwd() + '/' + filename).st_size) + 'MB)')
         print('-' * 16)
         print('Would you like to create another? (Y/N): ')
         if not input_tools.yes_no_query():

@@ -31,21 +31,35 @@ def yes_no_query():
             print("Please respond with 'yes' or 'no'")
 
 
+
+
 # Prompts the user for a supported resolution and returns it formatted for use
 # Pass a list of supported resolutions
 def get_resolution(supported_resolutions):
-    res_loop = True
-    while res_loop:
-        valid = False
-        while not valid:
-            supported_string = ', '.join(str(num) for num in supported_resolutions)
-            print('Supported Resolutions - (' + supported_string + ')')
-            user_input = int(input('Pick a resolution: '))
-            if user_input in supported_resolutions:
-                resolution = str(user_input) + 'x' + str(user_input)
-                return resolution
-            else:
-                print('Please enter a supported resolution.')
+    while 1 != 2:
+        supported_string = ', '.join(str(num) for num in supported_resolutions)
+        print('Supported Resolutions - (' + supported_string + ')')
+        user_input = int(input('Pick a resolution: '))
+        if user_input in supported_resolutions:
+            resolution = str(user_input) + 'x' + str(user_input)
+            return resolution
+        else:
+            print('Please enter a supported resolution.')
+
+
+def pick_satellite():
+    print('Please pick a satellite:')
+    print('1. GOES-East  |  2. GOES-West')
+    while 1 != 2:
+        user_input = int(input())
+        if user_input == 1:
+            url = 'https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/'
+            return url
+        if user_input == 2:
+            url = 'https://cdn.star.nesdis.noaa.gov/GOES18/ABI/FD/GEOCOLOR/'
+            return url
+        else:
+            print('Please enter a valid choice.')
 
 
 def date_input():
