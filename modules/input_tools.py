@@ -31,16 +31,16 @@ def yes_no_query():
             print("Please respond with 'yes' or 'no'")
 
 
-
-
 # Prompts the user for a supported resolution and returns it formatted for use
 # Pass a list of supported resolutions
 def get_resolution(supported_resolutions):
+    resolution_strings = list(map(str, supported_resolutions))
+    supported_string = ', '.join(res for res in resolution_strings)
     while 1 != 2:
-        supported_string = ', '.join(str(num) for num in supported_resolutions)
         print('Supported Resolutions - (' + supported_string + ')')
-        user_input = int(input('Pick a resolution: '))
-        if user_input in supported_resolutions:
+        user_input = input('Pick a resolution: ')
+        user_input = str(user_input) if user_input.isdigit() else user_input
+        if user_input in resolution_strings:
             resolution = str(user_input) + 'x' + str(user_input)
             return resolution
         else:
@@ -51,11 +51,11 @@ def pick_satellite():
     print('Please pick a satellite:')
     print('1. GOES-East  |  2. GOES-West')
     while 1 != 2:
-        user_input = int(input())
-        if user_input == 1:
+        user_input = input()
+        if str(user_input) == '1':
             url = 'https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/'
             return url
-        if user_input == 2:
+        if str(user_input) == '2':
             url = 'https://cdn.star.nesdis.noaa.gov/GOES18/ABI/FD/GEOCOLOR/'
             return url
         else:
@@ -64,30 +64,25 @@ def pick_satellite():
 
 def date_input():
     # Takes a string and verifies that it's a valid datetime matching the given format
-    def is_valid_date_time(date_string, format_string):
+    def is_valid_date_time(date_string, date_format):
         try:
-            datetime.strptime(date_string, format_string)
+            datetime.strptime(date_string, date_format)
             return True
         except ValueError:
             return False
 
-    date_list = []
-    valid_1 = False
-    valid_2 = False
-    while not valid_1:
-        start = input('Please enter a start date/time (ex. 20-Apr-2023 16:20): ')
-        date_start = datetime.strptime(start, '%d-%b-%Y %H:%M')
-        if is_valid_date_time(start, '%d-%b-%Y %H:%M'):
-            date_list.append(date_start)
-            valid_1 = True
-        else:
-            print('One or both of the dates you entered are invalid!')
-    while not valid_2:
-        end = input('Please enter an end date/time: ')
-        date_end = datetime.strptime(end, '%d-%b-%Y %H:%M')
-        if is_valid_date_time(end, '%d-%b-%Y %H:%M'):
-            date_list.append(date_end)
-            valid_2 = True
-        else:
-            print('One or both of the dates you entered are invalid!')
+    date_list = [None] * 2
+    valid = False
+    for i in range(2):
+        if i == 0:
+            print('Please enter a start date/time (ex. 20-Apr-2023 16:20): ')
+        elif i == 1:
+            print('Please enter an end date/time: ')
+        while True:
+            date_in = input()
+            if is_valid_date_time(date_in, '%d-%b-%Y %H:%M'):
+                date_list[i] = datetime.strptime(date_in, '%d-%b-%Y %H:%M')
+                break
+            else:
+                print('Please enter a valid date/time.')
     return date_list
