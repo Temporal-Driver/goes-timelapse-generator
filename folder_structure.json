@@ -1,33 +1,16 @@
 {
   "ABI": {
     "CONUS": {
-      "GEOCOLOR": {}
+      "Dust": {},
+      "FireTemperature": {},
+      "GEOCOLOR": {},
+      "Sandwich": {}
     },
     "FD": {
-      "GEOCOLOR": {}
-    },
-    "SECTOR": {
-      "cam": {},
-      "can": {},
-      "car": {},
-      "cgl": {},
-      "eep": {},
-      "eus": {},
-      "mex": {},
-      "na": {},
-      "ne": {},
-      "nr": {},
-      "nsa": {},
-      "pnw": {},
-      "pr": {},
-      "psw": {},
-      "se": {},
-      "smw": {},
-      "sp": {},
-      "sr": {},
-      "ssa": {},
-      "taw": {},
-      "umv": {}
+      "Dust": {},
+      "FireTemperature": {},
+      "GEOCOLOR": {},
+      "Sandwich": {}
     }
   },
   "SECTOR_STRUCTURE": {
@@ -36,7 +19,6 @@
       "Dust": {},
       "FireTemperature": {},
       "GEOCOLOR": {},
-      "NightMicrophysics": {},
       "Sandwich": {}
     }
   }
