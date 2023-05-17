@@ -14,7 +14,6 @@ from modules import image_handling
 
 image_path = os.getcwd() + '/images'
 ssl = True  # I wouldn't change this unless you know what you're doing
-supported_resolutions = [339, 678, 1808, 5424, 10848, 21696]
 
 
 def main():
@@ -23,6 +22,7 @@ def main():
     dates = []
     filename = ''
     url = input_tools.pick_satellite()
+    supported_resolutions = image_handling.parse_resolution(url)
     resolution = input_tools.get_resolution(supported_resolutions)
     if not os.path.exists(image_path):
         os.makedirs(image_path)
