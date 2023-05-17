@@ -12,6 +12,8 @@ import os
 from PIL import Image
 import requests
 from bs4 import BeautifulSoup
+import itertools
+import re
 
 
 def download_images(results, image_path, ssl):
@@ -19,17 +21,36 @@ def download_images(results, image_path, ssl):
         filename = file.split('//')[-1]
         dl_path = os.path.join(image_path, filename)
         if not os.path.isfile(dl_path):
-            r = requests.get(file, allow_redirects=True, verify=ssl)
+            r = requests.get(file, verify=ssl)
             open(dl_path, 'wb').write(r.content)
 
 
-def list_images(valid_codes, resolution, url, ssl):
-    def list_files(u=url, e='jpg'):
-        page = requests.get(u, verify=ssl).text
-        soup = BeautifulSoup(page, 'html.parser')
-        return [u + '/' + node.get('href') for node in
-                soup.find_all('a') if node.get('href').endswith(e)]
+def list_files(u, e='jpg'):
+    page = requests.get(u).text
+    soup = BeautifulSoup(page, 'html.parser')
+    return [u + '/' + node.get('href') for node in
+            soup.find_all('a') if node.get('href').endswith(e)]
 
+
+# finds available resolutions by taking the last 15 characters of a sample of file names
+def parse_resolution(url):
+    sample_list = list(itertools.islice(list_files(url, 'jpg'), 20))
+    cut_list = []
+    for item in sample_list:
+        cut_list.append(item[-15:])
+    pattern = r'x\d+'  # regex pattern to find digits after an x
+    resolutions = []
+    for string in cut_list:
+        match = re.findall(pattern, string)[0][1:]
+        if match not in resolutions:
+            resolutions.append(match)
+    resolution_list = [int(i) for i in resolutions]
+    resolution_list.sort()
+    sample_list.clear()
+    return resolution_list  # returns a list of resolutions as integers
+
+
+def list_images(valid_codes, resolution, url, ssl):
     filtered = []
     result_list = []
     for file in list_files():
