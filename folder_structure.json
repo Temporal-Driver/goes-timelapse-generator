@@ -1,0 +1,43 @@
+{
+  "ABI": {
+    "CONUS": {
+      "GEOCOLOR": {}
+    },
+    "FD": {
+      "GEOCOLOR": {}
+    },
+    "SECTOR": {
+      "cam": {},
+      "can": {},
+      "car": {},
+      "cgl": {},
+      "eep": {},
+      "eus": {},
+      "mex": {},
+      "na": {},
+      "ne": {},
+      "nr": {},
+      "nsa": {},
+      "pnw": {},
+      "pr": {},
+      "psw": {},
+      "se": {},
+      "smw": {},
+      "sp": {},
+      "sr": {},
+      "ssa": {},
+      "taw": {},
+      "umv": {}
+    }
+  },
+  "SECTOR_STRUCTURE": {
+      "AirMass": {},
+      "DayCloudPhase": {},
+      "Dust": {},
+      "FireTemperature": {},
+      "GEOCOLOR": {},
+      "NightMicrophysics": {},
+      "Sandwich": {}
+    }
+  }
+}
