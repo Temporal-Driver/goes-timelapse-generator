@@ -21,16 +21,13 @@ def download_images(results, image_path, ssl):
         filename = file.split('//')[-1]
         dl_path = os.path.join(image_path, filename)
         if not os.path.isfile(dl_path):
-            r = requests.get(file, allow_redirects=True, verify=ssl)
+            r = requests.get(file, verify=ssl)
             open(dl_path, 'wb').write(r.content)
 
 
 def list_files(u, e='jpg'):
     page = requests.get(u).text
     soup = BeautifulSoup(page, 'html.parser')
-    all_results = [u + '/' + node.get('href') for node in
-                   soup.find_all('a') if node.get('href').endswith(e)]
-
     return [u + '/' + node.get('href') for node in
             soup.find_all('a') if node.get('href').endswith(e)]
 
