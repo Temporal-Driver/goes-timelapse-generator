@@ -35,7 +35,7 @@ def main():
     url = build_url(args.sat, args.region, args.band)
     resolution = sizes[args.size][0] if args.region == 'disk' else sizes[args.size][1]
     file_codes = generate_file_codes(start, end, args.region)
-    results = image_handling.list_images(file_codes, resolution, url, ssl)
+    results = image_handling.list_images(file_codes, resolution, url)
     image_handling.download_images(results, image_path, ssl)
     image_handling.generate_gif(file_codes, filename, resolution, image_path)
     quit()

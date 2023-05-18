@@ -17,10 +17,6 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# import itertools
-# import re
-
-
 # downloads images from a list of urls
 def download_images(results, image_path, ssl):
     for file in results:
@@ -40,7 +36,7 @@ def list_files(u, e='jpg'):
 
 
 # takes file codes and resolutions and returns matching files
-def list_images(valid_codes, resolution, url, ssl):
+def list_images(valid_codes, resolution, url):
     filtered = []
     result_list = []
     for file in list_files(url):
