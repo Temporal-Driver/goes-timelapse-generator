@@ -5,12 +5,14 @@
     This script downloads and assembles satellite data from NOAA's CDN.
 """
 
+import argparse
 import math
 import os
 from datetime import datetime, timedelta
 
 from modules import input_tools
 from modules import image_handling
+from modules import command_parser
 
 image_path = os.getcwd() + '/images'
 ssl = True  # I wouldn't change this unless you know what you're doing
@@ -20,10 +22,9 @@ def main():
     name_loop = True
     running = True
     dates = []
-    filename = ''
-    url = input_tools.pick_satellite()
-    supported_resolutions = image_handling.parse_resolution(url)
-    resolution = input_tools.get_resolution(supported_resolutions)
+    filename = args.start.strftime('%d-%b-%Y %H%M') + ' - ' + args.end.strftime('%d-%b-%Y %H%M')
+    url = input_tools.build_url(args.sat, args.region, args.band)
+    resolution = command_parser.sizes[args.size][0] if args.region == 'disk' else command_parser.sizes[args.size][1]
     if not os.path.exists(image_path):
         os.makedirs(image_path)
     while running:
@@ -84,5 +85,8 @@ def bytes_to_megabytes(bytes_value):
     return megabytes_string
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    cmd_parser = argparse.ArgumentParser(description='GOES Timelapse Generator')
+    command_parser.process_args(cmd_parser)
+    args = cmd_parser.parse_args()
     main()

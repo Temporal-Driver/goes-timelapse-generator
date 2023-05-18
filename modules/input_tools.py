@@ -7,6 +7,7 @@ Used In: goes-timelapse-generator
 http://github.com/Temporal-Driver/goes-timelapse-generator
 
 Functions:
+- build_url(sat, region, band): Builds a URL for a given satellite, region, and band.
 - get_resolution(supported_resolutions): Prompts user for a supported resolution and returns it formatted for use.
 - yes_no_query(): Prompts the user to enter a valid yes or no answer and returns True or False.
 - date_input(): Prompts user for start & end date/time & returns them as datetime objects.
@@ -14,6 +15,24 @@ Functions:
 """
 
 from datetime import datetime
+
+
+# Builds a URL for a given satellite, region, and band
+def build_url(sat, region, band):
+    band_mapping = {
+        'airmass': 'AirMass/',
+        'daycloudphase': 'DayCloudPhase/',
+        'dust': 'Dust/',
+        'firetemperature': 'FireTemperature/',
+        'geocolor': 'GEOCOLOR/',
+        'sandwich': 'Sandwich/'
+    }
+    url = 'https://cdn.star.nesdis.noaa.gov/{sat}/{region}/{band}'.format(
+        sat='GOES16/ABI' if sat == 'east' else 'GOES18/ABI',
+        region='FD' if region == 'disk' else 'CONUS',
+        band=band_mapping.get(band, '')
+    )
+    return url
 
 
 # Prompts the user to enter a valid yes or no answer and returns True or False
@@ -45,21 +64,6 @@ def get_resolution(supported_resolutions):
             return resolution
         else:
             print('Please enter a supported resolution.')
-
-
-def pick_satellite():
-    print('Please pick a satellite:')
-    print('1. GOES-East  |  2. GOES-West')
-    while 1 != 2:
-        user_input = input()
-        if str(user_input) == '1':
-            url = 'https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/'
-            return url
-        if str(user_input) == '2':
-            url = 'https://cdn.star.nesdis.noaa.gov/GOES18/ABI/FD/GEOCOLOR/'
-            return url
-        else:
-            print('Please enter a valid choice.')
 
 
 def date_input():
