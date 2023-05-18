@@ -4,6 +4,7 @@
     Maintained At: https://github.com/Temporal-Driver/goes-timelapse-generator
     This script downloads and assembles satellite data from NOAA's CDN.
 """
+__version__ = '0.2.0'
 
 import argparse
 import math
@@ -14,9 +15,10 @@ from modules import image_handling
 from modules import command_parser
 
 image_path = os.getcwd() + '/images'
-ssl = True  # I wouldn't change this unless you know what you're doing
+os.makedirs(image_path, exist_ok=True)
+ssl = True  # I keep this here because ssl expired while testing, in case it happens again
 
-sizes = {  # [disk, conus]
+sizes = {  # [   disk  ,    conus   ]
     'small': ['678x678', '625x375'],
     'medium': ['1808x1808', '1250x750'],
     'large': ['5424x5424', '5000x3000'],
@@ -26,8 +28,6 @@ sizes = {  # [disk, conus]
 
 
 def main():
-    if not os.path.exists(image_path):
-        os.makedirs(image_path)
     args.band = 'geocolor'
     start = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
     end = datetime.strptime(args.end, '%d-%b-%Y %H:%M')
@@ -64,18 +64,18 @@ def generate_file_name(d1, d2):
 # conus: 5 minute intervals on 1s and 6s  |  disk: 10 minute intervals
 # I'd eventually like to make this more dynamic in case they change intervals
 def generate_file_codes(d1, d2, region):
-    def round_to_closest(n):
+    def round_to_interval(num_in):
         values = []
         if region == 'disk':
             values = [0, 10, 20, 30, 40, 50]
         elif region == 'conus':
             values = [6, 11, 16, 21, 26, 31, 36, 41, 46, 51, 56]
-        closest = min(values, key=lambda x: abs(x - n))
+        closest = min(values, key=lambda x: abs(x - num_in))
         return closest
 
     times = [d1.minute, d2.minute]
     for time in times:
-        rounded = round_to_closest(time)
+        rounded = round_to_interval(time)
         times[times.index(time)] = rounded
     d1 = d1.replace(minute=times[0])
     d2 = d2.replace(minute=times[1])
