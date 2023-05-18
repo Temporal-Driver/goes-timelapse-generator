@@ -67,22 +67,3 @@ def generate_gif(file_codes, filename, resolution, image_path):
                          append_images=image_frames[1:],
                          save_all=True,
                          duration=1, loop=0)
-
-# THIS FUNCTION MAY BE USED IN THE FUTURE IF I REMOVE HARDCODED RESOLUTIONS
-#
-# finds available resolutions by taking the last 15 characters of a sample of file names
-# def parse_resolution(url):
-#     sample_list = list(itertools.islice(list_files(url, 'jpg'), 20))
-#     cut_list = []
-#     for item in sample_list:
-#         cut_list.append(item[-15:])
-#     pattern = r'x\d+'  # regex pattern to find digits after an x
-#     resolutions = []
-#     for string in cut_list:
-#         match = re.findall(pattern, string)[0][1:]
-#         if match not in resolutions:
-#             resolutions.append(match)
-#     resolution_list = [int(i) for i in resolutions]
-#     resolution_list.sort()
-#     sample_list.clear()
-#     return resolution_list  # returns a list of resolutions as integers
