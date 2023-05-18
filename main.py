@@ -44,8 +44,8 @@ def main():
 # generates an output filename based on the start and end times
 # appends a number to the end if the filename already exists
 def generate_file_name(d1, d2):
-    date_string_1 = datetime.strftime(d1, '%d-%b-%Y %H%M')
-    date_string_2 = datetime.strftime(d2, '%d-%b-%Y %H%M')
+    date_string_1 = datetime.strftime(d1, '%d-%m-%y %H%M')
+    date_string_2 = datetime.strftime(d2, '%d-%m-%y %H%M')
     filename = date_string_1 + ' - ' + date_string_2 + '.gif'
     if os.path.isfile(os.getcwd() + '/' + filename):
         name_taken = True
