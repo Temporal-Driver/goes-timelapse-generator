@@ -1,12 +1,6 @@
 from datetime import datetime
 
-sizes = {
-    'small': ['678x678', '625x375'],
-    'medium': ['1808x1808', '1250x750'],
-    'large': ['5424x5424', '5000x3000'],
-    'full': ['10848x10848', '10000x6000'],
-    'max': ['21696x21696', '10000x6000']
-}
+
 
 
 class CaseInsensitive:

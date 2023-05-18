@@ -16,6 +16,14 @@ from modules import command_parser
 image_path = os.getcwd() + '/images'
 ssl = True  # I wouldn't change this unless you know what you're doing
 
+sizes = {  # [disk, conus]
+    'small': ['678x678', '625x375'],
+    'medium': ['1808x1808', '1250x750'],
+    'large': ['5424x5424', '5000x3000'],
+    'full': ['10848x10848', '10000x6000'],
+    'max': ['21696x21696', '10000x6000']
+}
+
 
 def main():
     if not os.path.exists(image_path):
@@ -25,7 +33,7 @@ def main():
     end = datetime.strptime(args.end, '%d-%b-%Y %H:%M')
     filename = generate_file_name(start, end)
     url = build_url(args.sat, args.region, args.band)
-    resolution = command_parser.sizes[args.size][0] if args.region == 'disk' else command_parser.sizes[args.size][1]
+    resolution = sizes[args.size][0] if args.region == 'disk' else sizes[args.size][1]
     file_codes = generate_file_codes(start, end, args.region)
     results = image_handling.list_images(file_codes, resolution, url, ssl)
     image_handling.download_images(results, image_path, ssl)
@@ -33,6 +41,8 @@ def main():
     quit()
 
 
+# generates an output filename based on the start and end times
+# appends a number to the end if the filename already exists
 def generate_file_name(d1, d2):
     date_string_1 = datetime.strftime(d1, '%d-%b-%Y %H%M')
     date_string_2 = datetime.strftime(d2, '%d-%b-%Y %H%M')
@@ -50,6 +60,9 @@ def generate_file_name(d1, d2):
         return filename
 
 
+# generates a list of valid file codes between the given start and end times
+# conus: 5 minute intervals on 1s and 6s  |  disk: 10 minute intervals
+# I'd eventually like to make this more dynamic in case they change intervals
 def generate_file_codes(d1, d2, region):
     def round_to_closest(n):
         values = []
@@ -80,6 +93,7 @@ def generate_file_codes(d1, d2, region):
             current_time = added_time
 
 
+# Takes a satellite, region, and band and returns the CDN URL
 def build_url(sat, region, band):
     band_mapping = {
         'airmass': 'AirMass/',

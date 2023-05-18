@@ -3,8 +3,11 @@ image_handling.py
 
 This module provides a set of functions for handling image downloads.
 
-Used In: goes-timelapse-generator
-http://github.com/Temporal-Driver/goes-timelapse-generator
+Functions:
+    download_images(results, image_path, ssl)
+    list_files(url, ext='jpg')
+    list_images(valid_codes, resolution, url, ssl)
+    generate_gif(file_codes, filename, resolution, image_path)
 
 """
 import glob
@@ -18,6 +21,7 @@ from bs4 import BeautifulSoup
 # import re
 
 
+# downloads images from a list of urls
 def download_images(results, image_path, ssl):
     for file in results:
         filename = file.split('//')[-1]
@@ -27,6 +31,7 @@ def download_images(results, image_path, ssl):
             open(dl_path, 'wb').write(r.content)
 
 
+# lists all files in a given CDN directory
 def list_files(u, e='jpg'):
     page = requests.get(u).text
     soup = BeautifulSoup(page, 'html.parser')
@@ -34,6 +39,7 @@ def list_files(u, e='jpg'):
             soup.find_all('a') if node.get('href').endswith(e)]
 
 
+# takes file codes and resolutions and returns matching files
 def list_images(valid_codes, resolution, url, ssl):
     filtered = []
     result_list = []
@@ -47,6 +53,9 @@ def list_images(valid_codes, resolution, url, ssl):
     return filtered
 
 
+# generates a gif using all images that match
+# I'd eventually like to make this smarter now that command arguments exist
+# but for now it works and I don't want to break it
 def generate_gif(file_codes, filename, resolution, image_path):
     image_frames = [None] * len(file_codes)
     images_in_folder = glob.glob(image_path + '/*.jpg')
