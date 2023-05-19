@@ -1,0 +1,23 @@
+{
+  "west_conus_large": {
+    "sat": "West",
+    "region": "CONUS",
+    "size": "Large",
+    "start": "",
+    "end": ""
+  },
+  "east_disk_large": {
+    "sat": "East",
+    "region": "Disk",
+    "size": "Large",
+    "start": "",
+    "end": ""
+  },
+  "east_conus_large": {
+    "sat": "East",
+    "region": "CONUS",
+    "size": "Large",
+    "start": "now",
+    "end": "-24"
+  }
+}
