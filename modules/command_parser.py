@@ -6,14 +6,6 @@ class CaseInsensitive:
         return value.lower()
 
 
-def validate_date_format(cmd_parse, date_string):
-    try:
-        datetime.strptime(date_string, '%d-%b-%Y %H:%M')
-        return date_string
-    except ValueError:
-        cmd_parse.error('Invalid date format. Example: "12-May-2023 15:20"')
-
-
 def process_args(parser):
     from main import preset_data
     parser.add_argument(
@@ -44,11 +36,11 @@ def process_args(parser):
     )
     parser.add_argument(
         '--start',
-        type=lambda start: validate_date_format(parser, start),
+        type=str,
         help='Pick the start date and time in quotes (Example: 12-May-2023 15:20)'
     )
     parser.add_argument(
         '--end',
-        type=lambda end: validate_date_format(parser, end),
+        type=str,
         help='Pick the end date and time in quotes (Example: 12-May-2023 15:20)'
     )

@@ -123,6 +123,17 @@ def bytes_to_megabytes(bytes_value):
 
 
 def argument_setup(parser):
+    def validate_date_format(date_string):
+        try:
+            datetime.strptime(date_string, '%d-%b-%Y %H:%M')
+            return True
+        except ValueError:
+            parser.error('Invalid date format. Example: "12-May-2023 15:20"')
+    # If no preset is passed, any missing arguments throw an error
+    if args.preset is None:
+        if args.sat is None or args.region is None or args.start is None or args.end is None:
+            parser.error('If --preset is not specified, all other arguments are required.')
+
     # If --preset is passed
     if args.preset:
         if args.preset not in preset_data.keys():
@@ -143,11 +154,11 @@ def argument_setup(parser):
             preset_value = preset.get(arg_name)
             if not preset_value == '':
                 setattr(args, arg_name, preset.get(arg_name).lower())
+        if args.size not in sizes.keys():
+            args.size = 'medium'
 
-    # If no preset is passed, any missing arguments throw an error
-    if args.preset is None:
-        if args.sat is None or args.region is None or args.start is None or args.end is None:
-            parser.error('If --preset is not specified, all other arguments are required.')
+    if not validate_date_format(args.start) or not validate_date_format(args.end):
+
 
 
 if __name__ == '__main__':
@@ -155,4 +166,6 @@ if __name__ == '__main__':
     command_parser.process_args(cmd_parser)
     args = cmd_parser.parse_args()
     argument_setup(cmd_parser)
+    print(args)
+    quit()
     main()
