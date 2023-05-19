@@ -4,7 +4,6 @@
     Maintained At: https://github.com/Temporal-Driver/goes-timelapse-generator
     This script downloads and assembles satellite data from NOAA's CDN.
 """
-__version__ = '0.2.0'
 
 import argparse
 import json
@@ -42,6 +41,9 @@ def main():
     results = image_handling.list_images(file_codes, resolution, url)
     image_handling.download_images(results, image_path, ssl)
     image_handling.generate_gif(file_codes, filename, resolution, image_path)
+    if os.path.isfile(os.getcwd() + '/' + filename):
+        size = bytes_to_megabytes(os.path.getsize(os.getcwd() + '/' + filename))
+        print('Success! Filename: ' + filename + ' | File Size: ' + size + 'MB')
     quit()
 
 
@@ -122,37 +124,70 @@ def bytes_to_megabytes(bytes_value):
     return megabytes_string
 
 
-def argument_setup(parser):
+def arg_manager(parser):
+    def validate_date_format(date_string):
+        try:
+            datetime.strptime(date_string, '%d-%b-%Y %H:%M')
+            return date_string
+        except ValueError:
+            return None
+
+    # Returns None if the value is not an integer. Used for checking --end
+    def try_int(v):
+        try:
+            result = int(v)
+            return result
+        except ValueError:
+            return None
+
     # If --preset is passed
     if args.preset:
         if args.preset not in preset_data.keys():
-            parser.error(f"Invalid preset '{args.preset}'. Valid presets are: {', '.join(preset_data.keys())}")
+            parser.error(f"Invalid preset '{args.preset}'. Valid presets: {', '.join(preset_data.keys())}")
         preset = preset_data[args.preset]
-        required_args = []
-        # check if any required arguments are missing
-        # required arguments are any arguments that are not empty in the preset
-        for arg_name in ['sat', 'region', 'size', 'start', 'end']:
+        missing_args = []
+        if args.size is None:
+            args.size = 'medium'
+        # check if any necessary args are missing from the preset and command
+        for arg_name in ['sat', 'region', 'start', 'end']:
             preset_value = preset.get(arg_name)
             arg_value = getattr(args, arg_name)
             if not preset_value and arg_value is None:
-                required_args.append(arg_name)
-        if required_args:
-            parser.error(f"These arguments are required for the preset '{args.preset}': {', '.join(required_args)}")
+                missing_args.append(arg_name)
+        if missing_args:
+            parser.error(f"These arguments are required for '{args.preset}': {', '.join(missing_args)}")
         # override any inputs with the preset values if they are not empty
         for arg_name in ['sat', 'region', 'size', 'start', 'end']:
             preset_value = preset.get(arg_name)
             if not preset_value == '':
                 setattr(args, arg_name, preset.get(arg_name).lower())
-
     # If no preset is passed, any missing arguments throw an error
     if args.preset is None:
         if args.sat is None or args.region is None or args.start is None or args.end is None:
             parser.error('If --preset is not specified, all other arguments are required.')
+    # Verifying date arguments, accounting for tags like "now" and "+x/-x"
+    if not args.start.lower() == 'now' and not validate_date_format(args.start):
+        parser.error(command_parser.start_date_error)
+    if try_int(args.end) is None and not validate_date_format(args.end):
+        parser.error(command_parser.end_date_error)
+    if args.start.lower() == 'now':
+        args.start = datetime.utcnow().strftime('%d-%b-%Y %H:%M')
+    if try_int(args.end) is not None:
+        old_time = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
+        new_time = old_time + timedelta(hours=int(args.end))
+        args.end = new_time.strftime('%d-%b-%Y %H:%M')
+        if datetime.strptime(args.start, '%d-%b-%Y %H:%M') > datetime.strptime(args.end, '%d-%b-%Y %H:%M'):
+            t = args.start
+            args.start = args.end
+            args.end = t
+    else:
+        if datetime.strptime(args.start, '%d-%b-%Y %H:%M') > datetime.strptime(args.end, '%d-%b-%Y %H:%M'):
+            parser.error('Start date must be before end date. (Unless using --end +x/-x)')
 
 
 if __name__ == '__main__':
     cmd_parser = argparse.ArgumentParser(description='GOES Timelapse Generator')
-    command_parser.process_args(cmd_parser)
+    command_parser.arg_setup(cmd_parser)
     args = cmd_parser.parse_args()
-    argument_setup(cmd_parser)
+    arg_manager(cmd_parser)
     main()
