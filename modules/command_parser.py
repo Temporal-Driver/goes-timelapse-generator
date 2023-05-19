@@ -15,19 +15,23 @@ def validate_date_format(cmd_parse, date_string):
 
 
 def process_args(parser):
-    required_choices = parser.add_argument_group('Required Arguments')
-    required_choices.add_argument(
+    from main import preset_data
+    parser.add_argument(
+        '--preset',
+        type=CaseInsensitive(),
+        choices=preset_data.keys(),
+        help='Pick a preset name'
+    )
+    parser.add_argument(
         '-s', '--sat',
         type=CaseInsensitive(),
         choices=['east', 'west'],
-        required=True,
         help='Specify which satellite (GOES-East or GOES-West)'
     )
-    required_choices.add_argument(
+    parser.add_argument(
         '-r', '--region',
         type=CaseInsensitive(),
         choices=['disk', 'conus'],
-        required=True,
         help='Specify which region (Full Disk or Continental US)'
     )
     parser.add_argument(
@@ -38,15 +42,13 @@ def process_args(parser):
                  'full', 'max'],
         help='Specify what size images to download (Medium is default)'
     )
-    required_choices.add_argument(
+    parser.add_argument(
         '--start',
         type=lambda start: validate_date_format(parser, start),
-        required=True,
         help='Pick the start date and time in quotes (Example: 12-May-2023 15:20)'
     )
-    required_choices.add_argument(
+    parser.add_argument(
         '--end',
         type=lambda end: validate_date_format(parser, end),
-        required=True,
         help='Pick the end date and time in quotes (Example: 12-May-2023 15:20)'
     )

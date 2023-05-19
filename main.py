@@ -7,6 +7,7 @@
 __version__ = '0.2.0'
 
 import argparse
+import json
 import math
 import os
 from datetime import datetime, timedelta
@@ -15,6 +16,9 @@ from modules import image_handling
 from modules import command_parser
 
 image_path = os.getcwd() + '/images'
+preset_path = os.getcwd() + '/presets.json'
+with open(preset_path) as file:
+    preset_data = json.load(file)
 os.makedirs(image_path, exist_ok=True)
 ssl = True  # I keep this here because ssl expired while testing, in case it happens again
 
@@ -118,8 +122,37 @@ def bytes_to_megabytes(bytes_value):
     return megabytes_string
 
 
+def argument_setup(parser):
+    # If --preset is passed
+    if args.preset:
+        if args.preset not in preset_data.keys():
+            parser.error(f"Invalid preset '{args.preset}'. Valid presets are: {', '.join(preset_data.keys())}")
+        preset = preset_data[args.preset]
+        required_args = []
+        # check if any required arguments are missing
+        # required arguments are any arguments that are not empty in the preset
+        for arg_name in ['sat', 'region', 'size', 'start', 'end']:
+            preset_value = preset.get(arg_name)
+            arg_value = getattr(args, arg_name)
+            if not preset_value and arg_value is None:
+                required_args.append(arg_name)
+        if required_args:
+            parser.error(f"These arguments are required for the preset '{args.preset}': {', '.join(required_args)}")
+        # override any inputs with the preset values if they are not empty
+        for arg_name in ['sat', 'region', 'size', 'start', 'end']:
+            preset_value = preset.get(arg_name)
+            if not preset_value == '':
+                setattr(args, arg_name, preset.get(arg_name).lower())
+
+    # If no preset is passed, any missing arguments throw an error
+    if args.preset is None:
+        if args.sat is None or args.region is None or args.start is None or args.end is None:
+            parser.error('If --preset is not specified, all other arguments are required.')
+
+
 if __name__ == '__main__':
     cmd_parser = argparse.ArgumentParser(description='GOES Timelapse Generator')
     command_parser.process_args(cmd_parser)
     args = cmd_parser.parse_args()
+    argument_setup(cmd_parser)
     main()
