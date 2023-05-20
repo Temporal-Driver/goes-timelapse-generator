@@ -192,6 +192,8 @@ def arg_manager(parser):
     else:
         if datetime.strptime(args.start, '%d-%b-%Y %H:%M') > datetime.strptime(args.end, '%d-%b-%Y %H:%M'):
             parser.error('Start date must be before end date. (Unless using --end +x/-x)')
+    if datetime.strptime(args.start, '%d-%b-%Y %H:%M') or datetime.strptime(args.end, '%d-%b-%Y %H:%M') > datetime.utcnow():
+        parser.error("Sorry, I can't get files from the future")
 
 
 if __name__ == '__main__':
