@@ -1,33 +1,31 @@
-from datetime import datetime
-
-
 class CaseInsensitive:
     def __call__(self, value):
         return value.lower()
 
 
-def validate_date_format(cmd_parse, date_string):
-    try:
-        datetime.strptime(date_string, '%d-%b-%Y %H:%M')
-        return date_string
-    except ValueError:
-        cmd_parse.error('Invalid date format. Example: "12-May-2023 15:20"')
+# I'm keeping this here because it makes main.py look ugly
+end_date_error = 'Invalid end format. Use a date in quotes: "14-May-2023 16:20" or use -x/+x to add/remove hours.'
+start_date_error = 'Invalid start format. Use a date in quotes: "14-May-2023 16:20", or --start now'
 
 
-def process_args(parser):
-    required_choices = parser.add_argument_group('Required Arguments')
-    required_choices.add_argument(
+def arg_setup(parser):
+    from main import preset_data
+    parser.add_argument(
+        '--preset',
+        type=CaseInsensitive(),
+        choices=preset_data.keys(),
+        help='Pick a preset name'
+    )
+    parser.add_argument(
         '-s', '--sat',
         type=CaseInsensitive(),
         choices=['east', 'west'],
-        required=True,
         help='Specify which satellite (GOES-East or GOES-West)'
     )
-    required_choices.add_argument(
+    parser.add_argument(
         '-r', '--region',
         type=CaseInsensitive(),
         choices=['disk', 'conus'],
-        required=True,
         help='Specify which region (Full Disk or Continental US)'
     )
     parser.add_argument(
@@ -38,15 +36,20 @@ def process_args(parser):
                  'full', 'max'],
         help='Specify what size images to download (Medium is default)'
     )
-    required_choices.add_argument(
+    parser.add_argument(
         '--start',
-        type=lambda start: validate_date_format(parser, start),
-        required=True,
-        help='Pick the start date and time in quotes (Example: 12-May-2023 15:20)'
+        type=str,
+        help='Pick the start date and time in quotes (Example: "14-May-2023 16:20"), or use --start now'
     )
-    required_choices.add_argument(
+    parser.add_argument(
         '--end',
-        type=lambda end: validate_date_format(parser, end),
-        required=True,
-        help='Pick the end date and time in quotes (Example: 12-May-2023 15:20)'
+        type=str,
+        help='Pick the end date and time in quotes (Example: "14-May-2023 16:20"), or use -x/+x to add/remove hours'
+    )
+    parser.add_argument(
+        '-k', '--keep',
+        action='store_const',
+        const=True,
+        default=False,
+        help='Keep the downloaded images after creating the timelapse'
     )
