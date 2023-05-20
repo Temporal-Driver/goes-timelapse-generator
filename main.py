@@ -16,11 +16,11 @@ from modules import image_handling
 from modules import command_parser
 
 image_path = os.getcwd() + '/images'
-preset_path = os.getcwd() + '/presets.json'
-with open(preset_path) as file:
+with open(os.getcwd() + '/presets.json') as file:
     preset_data = json.load(file)
 os.makedirs(image_path, exist_ok=True)
 ssl = True  # I keep this here because ssl expired while testing, in case it happens again
+date_format = '%d-%b-%Y %H:%M'
 
 sizes = {  # [   disk  ,    conus   ]
     'small': ['678x678', '625x375'],
@@ -33,8 +33,8 @@ sizes = {  # [   disk  ,    conus   ]
 
 def main():
     args.band = 'geocolor'
-    start = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
-    end = datetime.strptime(args.end, '%d-%b-%Y %H:%M')
+    start = datetime.strptime(args.start, date_format)
+    end = datetime.strptime(args.end, date_format)
     filename = generate_file_name(start, end)
     url = build_url(args.sat, args.region, args.band)
     resolution = sizes[args.size][0] if args.region == 'disk' else sizes[args.size][1]
@@ -133,10 +133,11 @@ def bytes_to_megabytes(bytes_value):
     return megabytes_string
 
 
+# Yes this can probably be done in less than 60 lines but it works
 def arg_manager(parser):
     def validate_date_format(date_string):
         try:
-            datetime.strptime(date_string, '%d-%b-%Y %H:%M')
+            datetime.strptime(date_string, date_format)
             return date_string
         except ValueError:
             return None
@@ -180,19 +181,19 @@ def arg_manager(parser):
     if try_int(args.end) is None and not validate_date_format(args.end):
         parser.error(command_parser.end_date_error)
     if args.start.lower() == 'now':
-        args.start = datetime.utcnow().strftime('%d-%b-%Y %H:%M')
+        args.start = datetime.utcnow().strftime(date_format)
     if try_int(args.end) is not None:
-        old_time = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
+        old_time = datetime.strptime(args.start, date_format)
         new_time = old_time + timedelta(hours=int(args.end))
-        args.end = new_time.strftime('%d-%b-%Y %H:%M')
-        if datetime.strptime(args.start, '%d-%b-%Y %H:%M') > datetime.strptime(args.end, '%d-%b-%Y %H:%M'):
+        args.end = new_time.strftime(date_format)
+        if datetime.strptime(args.start, date_format) > datetime.strptime(args.end, date_format):
             t = args.start
             args.start = args.end
             args.end = t
     else:
-        if datetime.strptime(args.start, '%d-%b-%Y %H:%M') > datetime.strptime(args.end, '%d-%b-%Y %H:%M'):
+        if datetime.strptime(args.start, date_format) > datetime.strptime(args.end, date_format):
             parser.error('Start date must be before end date. (Unless using --end +x/-x)')
-    if datetime.strptime(args.start, '%d-%b-%Y %H:%M') or datetime.strptime(args.end, '%d-%b-%Y %H:%M') > datetime.utcnow():
+    if datetime.strptime(args.start, date_format) or datetime.strptime(args.end, date_format) > datetime.utcnow():
         parser.error("Sorry, I can't get files from the future")
 
 
