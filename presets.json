@@ -13,11 +13,18 @@
     "start": "",
     "end": ""
   },
-  "east_conus_large": {
+  "last_24_east_disk": {
     "sat": "East",
-    "region": "CONUS",
-    "size": "Large",
+    "region": "Disk",
+    "size": "Small",
     "start": "now",
-    "end": "-4"
+    "end": "-24"
+  },
+  "last_12_west_disk": {
+    "sat": "East",
+    "region": "Disk",
+    "size": "Small",
+    "start": "now",
+    "end": "-12"
   }
 }

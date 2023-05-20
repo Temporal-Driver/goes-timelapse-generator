@@ -6,6 +6,7 @@
 """
 
 import argparse
+import glob
 import json
 import math
 import os
@@ -40,10 +41,18 @@ def main():
     file_codes = generate_file_codes(start, end, args.region)
     results = image_handling.list_images(file_codes, resolution, url)
     image_handling.download_images(results, image_path, ssl)
-    image_handling.generate_gif(file_codes, filename, resolution, image_path)
+    files_used = image_handling.generate_gif(file_codes, filename, resolution, image_path)
     if os.path.isfile(os.getcwd() + '/' + filename):
         size = bytes_to_megabytes(os.path.getsize(os.getcwd() + '/' + filename))
         print('Success! Filename: ' + filename + ' | File Size: ' + size + 'MB')
+        # delete images if --keep is not used
+        if not args.keep:
+            deleted_total = 0
+            for pics in glob.glob(image_path + '/*.jpg'):
+                if pics in files_used:
+                    deleted_total += os.path.getsize(pics)
+                    os.remove(pics)
+            print('Deleted ' + bytes_to_megabytes(deleted_total) + 'MB from /images/ folder.')
     quit()
 
 

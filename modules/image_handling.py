@@ -56,12 +56,15 @@ def generate_gif(file_codes, filename, resolution, image_path):
     image_frames = []
     images_in_folder = glob.glob(image_path + '/*.jpg')
     image_frames.extend([None] * len(file_codes))
+    files_used = []
     for img_path in images_in_folder:
         for i, code in enumerate(file_codes):
             if code in img_path and resolution in img_path:
                 image_frames[i] = Image.open(img_path)
+                files_used.append(img_path)
     image_frames = [item for item in image_frames if item is not None]
     image_frames[0].save(filename, format='GIF',
                          append_images=image_frames[1:],
                          save_all=True,
                          duration=1, loop=0)
+    return files_used

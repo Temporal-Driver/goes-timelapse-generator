@@ -46,3 +46,10 @@ def arg_setup(parser):
         type=str,
         help='Pick the end date and time in quotes (Example: "14-May-2023 16:20"), or use -x/+x to add/remove hours'
     )
+    parser.add_argument(
+        '-k', '--keep',
+        action='store_const',
+        const=True,
+        default=False,
+        help='Keep the downloaded images after creating the timelapse'
+    )
