@@ -32,7 +32,6 @@ sizes = {  # [   disk  ,    conus   ]
 
 
 def main():
-    args.band = 'geocolor'
     start = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
     end = datetime.strptime(args.end, '%d-%b-%Y %H:%M')
     filename = generate_file_name(start, end)
@@ -121,7 +120,7 @@ def build_url(sat, region, band):
     url = 'https://cdn.star.nesdis.noaa.gov/{sat}/{region}/{band}'.format(
         sat='GOES16/ABI' if sat == 'east' else 'GOES18/ABI',
         region='FD' if region == 'disk' else 'CONUS',
-        band=band_mapping.get(band, '')
+        band=band_mapping.get(band.lower(), '')
     )
     return url
 
@@ -192,8 +191,6 @@ def arg_manager(parser):
     else:
         if datetime.strptime(args.start, '%d-%b-%Y %H:%M') > datetime.strptime(args.end, '%d-%b-%Y %H:%M'):
             parser.error('Start date must be before end date. (Unless using --end +x/-x)')
-    if datetime.strptime(args.start, '%d-%b-%Y %H:%M') or datetime.strptime(args.end, '%d-%b-%Y %H:%M') > datetime.utcnow():
-        parser.error("Sorry, I can't get files from the future")
 
 
 if __name__ == '__main__':

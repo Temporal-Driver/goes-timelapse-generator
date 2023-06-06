@@ -53,3 +53,10 @@ def arg_setup(parser):
         default=False,
         help='Keep the downloaded images after creating the timelapse'
     )
+    parser.add_argument(
+        '-b', '--band',
+        action='store_const',
+        type=str,
+        default='geocolor',
+        help='Pick one of the available bands: airmass, daycloudphase, dust, firetemperature, geocolor (default)'
+    )
