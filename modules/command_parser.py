@@ -55,8 +55,7 @@ def arg_setup(parser):
     )
     parser.add_argument(
         '-b', '--band',
-        action='store_const',
-        type=str,
+        type=CaseInsensitive(),
         default='geocolor',
         help='Pick one of the available bands: airmass, daycloudphase, dust, firetemperature, geocolor (default)'
     )

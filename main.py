@@ -120,7 +120,7 @@ def build_url(sat, region, band):
     url = 'https://cdn.star.nesdis.noaa.gov/{sat}/{region}/{band}'.format(
         sat='GOES16/ABI' if sat == 'east' else 'GOES18/ABI',
         region='FD' if region == 'disk' else 'CONUS',
-        band=band_mapping.get(band.lower(), '')
+        band=band_mapping.get(band, '')
     )
     return url
 
