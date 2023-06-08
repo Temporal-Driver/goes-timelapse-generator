@@ -52,29 +52,29 @@ See examples below
 - Generate a timelapse of GOES-East's CONUS view:  
   
 ```shell  
-$ python main.py --sat east --region conus --start "12-May-2023 12:00" --end "12-May-2023 22:00"
+$ python goes_CLI.py --sat east --region conus --start "12-May-2023 12:00" --end "12-May-2023 22:00"
 ```  
   
 - Generate a large sized timelapse of GOES-West's Full Disk view:  
   
 ```shell  
-$ python main.py -s west -r disk --size large --start "13-May-2023 14:00" --end "13-May-2023 20:00"
+$ python goes_CLI.py -s west -r disk --size large --start "13-May-2023 14:00" --end "13-May-2023 20:00"
 ```  
   
 - Run the program with a full preset:  
   
 ```shell  
-$ python main.py --preset last_12_west_disk
+$ python goes_CLI.py --preset last_12_west_disk
 ```  
 - Run the program with a preset missing variables:  
   
 ```shell  
-$ python main.py --preset east_disk_large --start now --end -5
+$ python goes_CLI.py --preset east_disk_large --start now --end -5
 ``` 
 - Run the program with a preset and don't delete downloaded files:  
   
 ```shell  
-$ python main.py --preset last_12_west_disk --keep
+$ python goes_CLI.py --preset last_12_west_disk --keep
 ``` 
   
 ___  

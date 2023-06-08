@@ -18,13 +18,13 @@ class CaseInsensitive:
 #       pass
 
 
-# I'm keeping this here because it makes main.py look ugly
+# I'm keeping this here because it makes maingoes_CLI.py look ugly
 end_date_error = 'Invalid end format. Use a date in quotes: "14-May-2023 16:20" or use -x/+x to add/remove hours.'
 start_date_error = 'Invalid start format. Use a date in quotes: "14-May-2023 16:20", or --start now'
 
 
 def arg_setup(parser):
-    from main import preset_data
+    from goes_CLI import preset_data
     parser.add_argument(
         '--preset',
         type=CaseInsensitive(),
