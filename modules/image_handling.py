@@ -19,10 +19,13 @@ from bs4 import BeautifulSoup
 
 # downloads images from a list of urls
 def download_images(results, image_path, ssl):
-    for file in results:
+    total = len(results)
+    for index, file in enumerate(results):
         filename = file.split('//')[-1]
         dl_path = os.path.join(image_path, filename)
         if not os.path.isfile(dl_path):
+            pad = "{:0>{}}".format(index + 1, len(str(total)))
+            print(f"[{pad}/{total}] Downloading: {filename}", end='\r')
             r = requests.get(file, verify=ssl)
             open(dl_path, 'wb').write(r.content)
 

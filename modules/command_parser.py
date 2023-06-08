@@ -3,6 +3,13 @@ class CaseInsensitive:
         return value.lower()
 
 
+# Leaving this here so I remember to do it
+# I want to use this to replace the date check that comes later
+# class DateArg:
+    # def __call__(self, value):
+        # pass
+
+
 # I'm keeping this here because it makes main.py look ugly
 end_date_error = 'Invalid end format. Use a date in quotes: "14-May-2023 16:20" or use -x/+x to add/remove hours.'
 start_date_error = 'Invalid start format. Use a date in quotes: "14-May-2023 16:20", or --start now'
