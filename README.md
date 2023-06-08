@@ -4,22 +4,19 @@
   
 #### A simple Python script to generate timelapses from images found at NOAA's [CDN](https://cdn.star.nesdis.noaa.gov/GOES16/)  
   
-This is my first time trying to make more than just a prototype in Python, and my first time using GitHub, so you may  
-see problems here and there. Let me know and I'll do my best to fix them.  
+This is my first time trying to make more than just a prototype in Python, and my first time using GitHub, so you may see problems here and there. Let me know and I'll do my best to fix them.  
 ___  
   
 ### Features  
   
-- GOES-East Full Disk / CONUS Timelapses  
-- GOES-West Full Disk / CONUS Timelapses  
-*(CONUS = Continental U.S.)*  ![Full Disk Example](https://raw.githubusercontent.com/secondbyte/gtg-images/main/Full%20Disk%20Example.png)![Full Disk Example](https://raw.githubusercontent.com/secondbyte/gtg-images/main/CONUS%20Example.png)
+- GOES Full Disk / CONUS Timelapses
+- Different bands (GEOCOLOR, Fire Temperature, etc.)
+- Save presets for quick generation
+![Full Disk Example](https://raw.githubusercontent.com/secondbyte/gtg-images/main/Full%20Disk%20Example.png)![Full Disk Example](https://raw.githubusercontent.com/secondbyte/gtg-images/main/CONUS%20Example.png)
 ___  
   
-### Planned Features  
-  
-- Saving presets
+### Planned Features
 - File size estimation
-- Different bands other than GEOCOLOR
 - GIF compression  
 - FFMPEG functionality to generate videos  
 - Batch generation  
