@@ -34,9 +34,11 @@ sizes = {  # [   disk  ,    conus   ]
 
 
 def main():
+    start = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
+    end = datetime.strptime(args.end, '%d-%b-%Y %H:%M')
     pretty_dates = []
-    for d in [args.start, args.end]:
-        pretty_dates.append(datetime.strftime(datetime.strptime(d, '%d-%b-%Y %H:%M'), '%d %b %Y at %H:%M'))
+    for d in [start, end]:
+        pretty_dates.append(datetime.strftime(d, '%d %b %Y at %H:%M'))
     divider = '----------------------------------------'
     print(divider)
     print(f'GOES Timelapse Generator - Version {version}')
@@ -47,8 +49,6 @@ def main():
         else:
             print('   End Date: ' + pretty_dates[index])
     print(divider)
-    start = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
-    end = datetime.strptime(args.end, '%d-%b-%Y %H:%M')
     filename = generate_file_name(start, end)
     url = build_url(args.sat, args.region, args.band)
     resolution = sizes[args.size][0 if args.region == 'disk' else 1]
