@@ -1,3 +1,11 @@
+"""
+command_parser.py
+
+This module is used to parse command line arguments.
+
+"""
+
+
 class CaseInsensitive:
     def __call__(self, value):
         return value.lower()
@@ -6,8 +14,8 @@ class CaseInsensitive:
 # Leaving this here so I remember to do it
 # I want to use this to replace the date check that comes later
 # class DateArg:
-    # def __call__(self, value):
-        # pass
+#   def __call__(self, value):
+#       pass
 
 
 # I'm keeping this here because it makes main.py look ugly

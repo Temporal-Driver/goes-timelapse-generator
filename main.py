@@ -15,6 +15,8 @@ from datetime import datetime, timedelta
 from modules import image_handling
 from modules import command_parser
 
+version = '0.2.2'
+
 image_path = os.getcwd() + '/images'
 preset_path = os.getcwd() + '/presets.json'
 with open(preset_path) as file:
@@ -32,13 +34,31 @@ sizes = {  # [   disk  ,    conus   ]
 
 
 def main():
+    pretty_dates = []
+    for d in [args.start, args.end]:
+        pretty_dates.append(datetime.strftime(datetime.strptime(d, '%d-%b-%Y %H:%M'), '%d %b %Y at %H:%M'))
+    divider = '----------------------------------------'
+    print(divider)
+    print(f'GOES Timelapse Generator - Version {version}')
+    print(divider)
+    for index, arg in enumerate(pretty_dates):
+        if index == 0:
+            print('   Start Date: ' + pretty_dates[index])
+        else:
+            print('   End Date: ' + pretty_dates[index])
+    print(divider)
     start = datetime.strptime(args.start, '%d-%b-%Y %H:%M')
     end = datetime.strptime(args.end, '%d-%b-%Y %H:%M')
     filename = generate_file_name(start, end)
     url = build_url(args.sat, args.region, args.band)
-    resolution = sizes[args.size][0] if args.region == 'disk' else sizes[args.size][1]
+    resolution = sizes[args.size][0 if args.region == 'disk' else 1]
     file_codes = generate_file_codes(start, end, args.region)
     results = image_handling.list_images(file_codes, resolution, url)
+    if len(results) == 0:
+        print('No photos found for ' + args.start + ' through ' + args.end + '.')
+        quit()
+    else:
+        print('Found (' + str(len(results)) + ') photos for ' + args.start + ' through ' + args.end + '.')
     image_handling.download_images(results, image_path, ssl)
     files_used = image_handling.generate_gif(file_codes, filename, resolution, image_path)
     if os.path.isfile(os.getcwd() + '/' + filename):

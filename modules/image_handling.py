@@ -1,13 +1,7 @@
 """
 image_handling.py
 
-This module provides a set of functions for handling image downloads.
-
-Functions:
-    download_images(results, image_path, ssl)
-    list_files(url, ext='jpg')
-    list_images(valid_codes, resolution, url, ssl)
-    generate_gif(file_codes, filename, resolution, image_path)
+This module provides a set of functions for handling image downloads and GIF generation.
 
 """
 import glob
@@ -28,6 +22,7 @@ def download_images(results, image_path, ssl):
             print(f"[{pad}/{total}] Downloading: {filename}", end='\r')
             r = requests.get(file, verify=ssl)
             open(dl_path, 'wb').write(r.content)
+    print('[' + str(total) + '/' + str(total) + '] Downloading: Complete!')
 
 
 # lists all files in a given CDN directory
@@ -60,6 +55,7 @@ def generate_gif(file_codes, filename, resolution, image_path):
     images_in_folder = glob.glob(image_path + '/*.jpg')
     image_frames.extend([None] * len(file_codes))
     files_used = []
+    print('Generating GIF... (This may take a while)')
     for img_path in images_in_folder:
         for i, code in enumerate(file_codes):
             if code in img_path and resolution in img_path:
