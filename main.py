@@ -53,7 +53,12 @@ def main():
     url = build_url(args.sat, args.region, args.band)
     resolution = sizes[args.size][0 if args.region == 'disk' else 1]
     file_codes = generate_file_codes(start, end, args.region)
-    results = image_handling.list_images(file_codes, resolution, url)
+    # Most files are .jpg, so that's the default unless it's a large image
+    ext = 'jpg'
+    # for large images in the non-geocolor bands, NOAA uses .zip files
+    if resolution in ['10848x10848', '21696x21696', '10000x6000'] and args.band == 'geocolor':
+        ext = 'zip'
+    results = image_handling.list_images(file_codes, resolution, url, ext)
     if len(results) == 0:
         print('No photos found for ' + args.start + ' through ' + args.end + '.')
         quit()

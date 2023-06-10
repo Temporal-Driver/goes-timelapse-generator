@@ -9,6 +9,7 @@ import os
 from PIL import Image
 import requests
 from bs4 import BeautifulSoup
+import zipfile
 
 
 # downloads images from a list of urls
@@ -22,11 +23,20 @@ def download_images(results, image_path, ssl):
             print(f"[{pad}/{total}] Downloading: {filename}", end='\r')
             r = requests.get(file, verify=ssl)
             open(dl_path, 'wb').write(r.content)
+            # Unzip files if necessary
+            if filename[-3:] == 'zip':
+                with zipfile.ZipFile(dl_path, 'r') as z:
+                    file_list = z.namelist()
+                    # Check that the zip file contains only one image
+                    # Technically this is for safety, but kinda unnecessary
+                    if len(file_list) == 1 and file_list[0].lower().endswith('.jpg'):
+                        z.extractall(image_path)
+                        os.remove(dl_path)
     print('[' + str(total) + '/' + str(total) + '] Downloading: Complete!')
 
 
 # lists all files in a given CDN directory
-def list_files(u, e='jpg'):
+def list_files(u, e):
     page = requests.get(u).text
     soup = BeautifulSoup(page, 'html.parser')
     return [u + '/' + node.get('href') for node in
@@ -34,10 +44,10 @@ def list_files(u, e='jpg'):
 
 
 # takes file codes and resolutions and returns matching files
-def list_images(valid_codes, resolution, url):
+def list_images(valid_codes, resolution, url, e):
     filtered = []
     result_list = []
-    for file in list_files(url):
+    for file in list_files(url, e):
         if resolution in file:
             result_list.append(file)
     for file in result_list:
